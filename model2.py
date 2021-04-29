@@ -1143,7 +1143,7 @@ class HighResolutionNet(nn.Module):
         return out, axn_input
 
 # resNest50
-from resnest.torch import resnest50
+#from resnest.torch import resnest50
 class MyResNest50(nn.Module):
     
     def __init__(self, nums_class=136):

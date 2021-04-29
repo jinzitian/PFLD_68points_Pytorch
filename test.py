@@ -7,20 +7,18 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 print('pid: {}     GPU: {}'.format(os.getpid(), os.environ['CUDA_VISIBLE_DEVICES']))
 import numpy as np
 import cv2
-import time
 from RetinaFaceMaster.test import predict
-from mtcnn.detect_face import MTCNN
-from model2 import MobileNetV2, BlazeLandMark
+from model2 import BlazeLandMark
 import torch
 
 
 def test_images():
-    model_path = './models2/model0/model_499.pth'
-    images_dir = './test_images_2/'  #'./data/test_data/imgs/'
+    model_path = './models2/model0/model_42.pth'
+    images_dir = './data/WFLW/test_data/imgs/'
     image_size = 112  # 112
 
     model = BlazeLandMark(nums_class=136)
-    model = torch.load(model_path)
+    model = torch.load(model_path,map_location=torch.device('cpu'))
     model.eval()
     image_files = os.listdir(images_dir)
     for index, image_file in enumerate(image_files):
@@ -68,7 +66,7 @@ def test_images():
             input = torch.Tensor(input.transpose((0, 3, 1, 2)))
 
             cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0))
-            pre_landmarks, _ = model(input.cuda())
+            pre_landmarks, _ = model(input)#model(input.cuda())
             pre_landmark = pre_landmarks[0].cpu().detach().numpy()
             pre_landmark = pre_landmark.reshape(-1, 2) * [image_size, image_size]
             
@@ -77,8 +75,10 @@ def test_images():
             # cv2.imshow('1', cropped)
 
             pre_landmark = pre_landmark * [size/image_size, size/image_size] - [dx, dy]
-            for (x, y) in pre_landmark.astype(np.int32):
-                cv2.circle(image, (x1 + x, y1 + y), 2, (0, 0, 255), 2)
+            pre_landmark = [[x1 + x, y1 + y] for (x, y) in pre_landmark.astype(np.int32)]
+            
+            for (x, y) in pre_landmark:
+                cv2.circle(image, (x, y), 2, (0, 0, 255), 2)
         # image = cv2.resize(image, (width, height))
         cv2.imshow('0', image)
         if cv2.waitKey(0) == 27:

@@ -17,7 +17,7 @@ import argparse
 import sys
 import time
 from generate_data import DataSet
-from model2 import MobileNetV2, BlazeLandMark, AuxiliaryNet, WingLoss, EfficientLM, HighResolutionNet, MyResNest50
+from model2 import MobileNetV2, BlazeLandMark, AuxiliaryNet, WingLoss, EfficientLM, HighResolutionNet
 from utils import train_model
 from euler_angles_utils import calculate_pitch_yaw_roll
 
@@ -85,8 +85,8 @@ def main(args):
     # auxiliary_net = AuxiliaryNet(input_channels=num_of_channels[0])
     
     #BlazeLandMark
-    #model = BlazeLandMark(nums_class=136)
-    #auxiliary_net = AuxiliaryNet(input_channels=48, first_conv_stride=2)
+    model = BlazeLandMark(nums_class=136)
+    auxiliary_net = AuxiliaryNet(input_channels=48, first_conv_stride=2)
     
     """
         compound_coef=0 : efficientNet-b0;
@@ -104,8 +104,8 @@ def main(args):
     #model = HighResolutionNet(nums_class=136)
     #auxiliary_net = AuxiliaryNet(input_channels=64, first_conv_stride=2)
     
-    model = MyResNest50(nums_class=136)
-    auxiliary_net = AuxiliaryNet(input_channels=64, first_conv_stride=2)
+    #model = MyResNest50(nums_class=136)
+    #auxiliary_net = AuxiliaryNet(input_channels=64, first_conv_stride=2)
     
     if args.pretrained_model:
         pretrained_model = args.pretrained_model
@@ -282,8 +282,8 @@ def save_image_example(train_loader, args):
 def parse_arguments(argv):
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--file_list', type=str, default='data/train_data/list.txt')
-    parser.add_argument('--test_list', type=str, default='data/test_data/list.txt')
+    parser.add_argument('--file_list', type=str, default='data/WFLW/train_data/list.txt')
+    parser.add_argument('--test_list', type=str, default='data/WFLW/test_data/list.txt')
     parser.add_argument('--loss_log_dir', type=str, default='./train_loss_log/')
     parser.add_argument('--seed', type=int, default=666)
     parser.add_argument('--max_epoch', type=int, default=1000)
