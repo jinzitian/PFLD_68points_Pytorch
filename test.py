@@ -8,7 +8,7 @@ print('pid: {}     GPU: {}'.format(os.getpid(), os.environ['CUDA_VISIBLE_DEVICES
 import numpy as np
 import cv2
 from RetinaFaceMaster.test import predict
-from model2 import BlazeLandMark
+from model2 import BlazeLandMark #torch.load的py模型文件必须和执行脚本在同一级目录，否则抱错
 import torch
 
 
@@ -17,7 +17,7 @@ def test_images():
     images_dir = './data/WFLW/test_data/imgs/'
     image_size = 112  # 112
 
-    model = BlazeLandMark(nums_class=136)
+    #model = BlazeLandMark(nums_class=136)
     model = torch.load(model_path,map_location=torch.device('cpu'))
     model.eval()
     image_files = os.listdir(images_dir)
@@ -76,7 +76,6 @@ def test_images():
 
             pre_landmark = pre_landmark * [size/image_size, size/image_size] - [dx, dy]
             pre_landmark = [[x1 + x, y1 + y] for (x, y) in pre_landmark.astype(np.int32)]
-            
             for (x, y) in pre_landmark:
                 cv2.circle(image, (x, y), 2, (0, 0, 255), 2)
         # image = cv2.resize(image, (width, height))
@@ -95,7 +94,7 @@ def main():
     # num_of_channels = [int(64 * coefficient), int(128 * coefficient), int(16 * coefficient), int(32 * coefficient),
     #                    int(128 * coefficient)]
     # model = MobileNetV2(num_of_channels=num_of_channels, nums_class=136)
-    model = BlazeLandMark(nums_class=136)
+    #model = BlazeLandMark(nums_class=136)
     model = torch.load(model_file)
     model.eval()
 
